@@ -1,0 +1,31 @@
+---
+driver:
+  name: vagrant
+
+provisioner:
+  name: chef_solo
+
+platforms:
+  - name: node1
+    driver:
+      box: ubuntu/xenial64 
+      network:
+        - ["forwarded_port", {guest: 80, host: 8080}]
+        - ['private_network', {ip: '192.168.33.5'}]
+    run_list:
+      - recipe[firstcookbook::default]
+      - recipe[frontend::default]
+    
+  - name: node2
+    driver:
+      box: ubuntu/xenial64 
+      network:
+        - ["forwarded_port", {guest: 3306, host: 3306}]
+        - ['private_network', {ip: '192.168.33.10'}]
+    run_list:
+      - recipe[firstcookbook::default]
+      - recipe[backend::default]
+
+suites:
+  - name: testapp
+    run_list: []
